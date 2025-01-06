@@ -1,7 +1,7 @@
 # WebPush for iOS sample code and demo site
 _WebPush - is browser technology that allows site developer send notifications from backend to subscribers. Now at iPhone and iPad!_
 <br><br>
-<b>Demo https://andreinwald.github.io/webpush-ios-example </b><br>
+<b>Demo https://missition2.github.io/tesplayer/ </b><br>
 
 <img src="images/webpush-iphone-prompt.png" alt="Iphone prompt example" style="height:400px">
 
@@ -185,10 +185,10 @@ You can send WebPush from **frontend**:
 const title = "Push title";
 const options = {
     body: "Additional text with some description",
-    icon: "https://andreinwald.github.io/webpush-ios-example/images/favicon.png",
+    icon: "https://missition2.github.io/tesplayer/images/favicon.png",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg/1920px-Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg",
     data: {
-        "url": "https://andreinwald.github.io/webpush-ios-example/?page=success",
+        "url": "https://missition2.github.io/tesplayer/?page=success",
         "message_id": "your_internal_unique_message_id_for_tracking"
     },
 };
