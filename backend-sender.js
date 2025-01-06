@@ -10,7 +10,7 @@ const VAPID_PRIVATE_KEY = "wH3Mire4Nrw7UWiYuD4e76qSezQ-5Nf_9n_HK3vHBSU";
 const webpush = require('web-push');
 
 webpush.setVapidDetails(
-    'https://andreinwald.github.io/webpush-ios-example/',
+    'https://missition2.github.io/tesplayer/',
     VAPID_PUBLIC_KEY,
     VAPID_PRIVATE_KEY
 );
@@ -27,12 +27,12 @@ const pushSubscription = {
 ;
 
 let pushData = JSON.stringify({
-    title": "Transferência Express",
+    "title": "Transferência Express",
     "body": "Transferência de 6.000,00 (Kz) recebida com sucesso",
-    "icon": "https://andreinwald.github.io/webpush-ios-example/images/favicon.png",
+    "icon": "https://missition2.github.io/tesplayer/images/favicon.png",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg/1920px-Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg",
     "data": {
-        "url": "https://andreinwald.github.io/webpush-ios-example/?page=success",
+        "url": "https://missition2.github.io/tesplayer/?page=success",
         "message_id": "your_internal_unique_message_id_for_tracking"
     }
 });
