@@ -27,8 +27,8 @@ const pushSubscription = {
 ;
 
 let pushData = JSON.stringify({
-    "title": "Push title",
-    "body": "Additional text with some description",
+    title": "Transferência Express",
+    "body": "Transferência de 6.000,00 (Kz) recebida com sucesso",
     "icon": "https://andreinwald.github.io/webpush-ios-example/images/favicon.png",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg/1920px-Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg",
     "data": {
