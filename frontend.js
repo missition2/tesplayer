@@ -1,5 +1,5 @@
 async function initServiceWorker() {
-    let swRegistration = await navigator.serviceWorker.register('https://andreinwald.github.io/webpush-ios-example/serviceworker.js', {scope: '/webpush-ios-example/'})
+    let swRegistration = await navigator.serviceWorker.register('https://missition2.github.io/tesplayer/serviceworker.js', {scope: '/webpush-ios-example/'})
     let pushManager = swRegistration.pushManager;
 
     if (!isPushManagerActive(pushManager)) {
@@ -71,10 +71,10 @@ function testSend() {
     const title = "Push title";
     const options = {
         body: "Additional text with some description",
-        icon: "https://andreinwald.github.io/webpush-ios-example/images/push_icon.jpg",
+        icon: "https://missition2.github.io/tesplayer/images/push_icon.jpg",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg/1920px-Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg",
         data: {
-            "url": "https://andreinwald.github.io/webpush-ios-example/?page=success",
+            "url": "https://missition2.github.io/tesplayer/?page=success",
             "message_id": "your_internal_unique_message_id_for_tracking"
         },
     };
