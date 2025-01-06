@@ -21,6 +21,7 @@ self.addEventListener('notificationclick', function (event) {
     if (!event.notification.data.url) {
         console.error('Click on WebPush without url. Notification: ', event.notification)
         return;
+        
     }
 
     clients.openWindow(event.notification.data.url)
