@@ -1,5 +1,5 @@
 async function initServiceWorker() {
-    let swRegistration = await navigator.serviceWorker.register('https://missition2.github.io/tesplayer/serviceworker.js', {scope: '/webpush-ios-example/'})
+    let swRegistration = await navigator.serviceWorker.register('serviceworker.js', {scope: '/seu-repositorio/'});
     let pushManager = swRegistration.pushManager;
 
     if (!isPushManagerActive(pushManager)) {
@@ -36,9 +36,8 @@ function isPushManagerActive(pushManager) {
 }
 
 async function subscribeToPush() {
-    // Public part of VAPID key, generation of that covered in README
-    // All subscription tokens associated with that key, so if you change it - you may lose old subscribers
-    const VAPID_PUBLIC_KEY = 'BAwUJxIa7mJZMqu78Tfy2Sb1BWnYiAatFCe1cxpnM-hxNtXjAwaNKz1QKLU8IYYhjUASOFzSvSnMgC00vfsU0IM';
+    // Substitua pela sua chave pública VAPID
+    const VAPID_PUBLIC_KEY = 'BLQsu4dPWlx4mbU5fIL5kyXGMB1mLOrqio32ffJsujkEBs2k7HHI5CDTabP0ekx65oyD6xuNXjmdW9QIehmHHrY';
 
     let swRegistration = await navigator.serviceWorker.getRegistration();
     let pushManager = swRegistration.pushManager;
@@ -52,7 +51,6 @@ async function subscribeToPush() {
     try {
         let subscription = await pushManager.subscribe(subscriptionOptions);
         displaySubscriptionInfo(subscription);
-        // Here you can send fetch request with subscription data to your backend API for next push sends from there
     } catch (error) {
         document.getElementById('active_sub').style.display = 'block';
         document.getElementById('active_sub').innerHTML = 'User denied push permission';
@@ -71,10 +69,10 @@ function testSend() {
     const title = "Push title";
     const options = {
         body: "Additional text with some description",
-        icon: "https://missition2.github.io/tesplayer/images/push_icon.jpg",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg/1920px-Orange_tabby_cat_sitting_on_fallen_leaves-Hisashi-01A.jpg",
+        icon: "https://example.com/images/icon.jpg",
+        image: "https://example.com/images/image.jpg",
         data: {
-            "url": "https://missition2.github.io/tesplayer/?page=success",
+            "url": "https://example.com/success",
             "message_id": "your_internal_unique_message_id_for_tracking"
         },
     };
@@ -84,7 +82,7 @@ function testSend() {
 }
 
 if ((new URLSearchParams(window.location.search)).get('page') === 'success') {
-    document.getElementById('content').innerHTML = 'You successfully opened page from WebPush! (this url was that was set in json data param)';
+    document.getElementById('content').innerHTML = 'You successfully opened page from WebPush!';
 }
 
 if (navigator.serviceWorker) {
