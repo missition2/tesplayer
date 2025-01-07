@@ -1,49 +1,120 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-    <title>WebPush iOS example</title>
-    <base href="https://missition2.github.io/tesplayer/">
-    <link rel="manifest" href="manifest.json"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    <link rel="apple-touch-icon" href="images/favicon.png"> <!-- needed for phone PWA app icon -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificação WebPush para iOS</title>
+    <link rel="manifest" href="manifest.json">
     <style>
-        body {background-color: #cfc7e2;font-family: Arial, sans-serif;font-size: 18px;padding-bottom: 50px;}
-        .wrapper {max-width: 800px;margin: 0 auto;}
-        @supports (-webkit-touch-callout: none) {#scan-qr-code {display: none;}}
-        #add-to-home-screen {display: none;background-color: bisque;padding: 10px;}
-        #add-to-home-screen img {display: block;margin: 0 auto;padding-top: 10px;max-height: 500px;max-width: 100%}
-        #scan-qr-code img {display: block;max-width: 100%}
-        #subscribe_btn, #test_send_btn {display: none;width: 100%;line-height: 2;font-size: 20px;margin-top: 10px;}
-        #active_sub {display: none;background-color: #e7e7ff;padding: 20px;word-wrap: break-word;}
-        #source_link {position: fixed;bottom: 10px;color: #fff;background-color: rgba(0,0,0,0.5);padding: 5px;left: 10px;}
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-<div class="wrapper">
-    <h1>WebPush iOS example</h1>
-
-    <div id="content">
-        <div id="add-to-home-screen">
-            For WebPush work you may need to add this website to Home Screen at your iPhone or iPad (window.navigator is
-            not
-            standalone).
-            <img src="images/webpush-add-to-home-screen.jpg" alt="webpush add to some screen">
-        </div>
-
-        <div id="scan-qr-code">Open this page at your iPhone/iPad:
-            <img src="images/qrcode.png" alt="qrCode"><br><br>
-        </div>
-
-        <button id="subscribe_btn" onclick="subscribeToPush()">Subscribe to notifications</button>
-
-        <div id="active_sub"></div>
-        <button id="test_send_btn" onclick="testSend()">Send test push</button>
+    <div class="container">
+        <h1>Receba Notificações Push</h1>
+        <p>Adicione o site à sua tela inicial no seu dispositivo iOS para começar a receber notificações.</p>
+        <button onclick="subscribe();">Inscreva-se para Notificações</button>
+        <div class="message" id="message"></div>
     </div>
 
-    <a id="source_link" href="https://github.com/missition2/tesplayer">Code of this page</a>
-</div>
+    <script>
+        // Registrar o Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/serviceworker.js').then(function(registration) {
+                console.log('Service Worker registrado com sucesso!', registration);
+            }).catch(function(error) {
+                console.log('Erro ao registrar Service Worker:', error);
+            });
+        }
 
-<script src="frontend.js"></script>
+        // Função para assinar o usuário para notificações
+        function subscribe() {
+            // Verificar se o navegador suporta PushManager
+            if (!('PushManager' in window)) {
+                alert('Este navegador não suporta notificações push!');
+                return;
+            }
+
+            // Solicitar permissão para enviar notificações
+            Notification.requestPermission().then(function(permission) {
+                if (permission === 'granted') {
+                    // O usuário aceitou a permissão para notificações
+                    subscribeToPush();
+                } else {
+                    // O usuário negou a permissão para notificações
+                    alert('Você precisa permitir notificações!');
+                }
+            });
+        }
+
+        // Função para assinar o usuário no serviço de notificações
+        function subscribeToPush() {
+            navigator.serviceWorker.ready.then(function(serviceWorker) {
+                const applicationServerKey = urlBase64ToUint8Array('BCvwjmf8XKpRSlAKrtzaBkIaLv1ew5Rqrv-1L__zDgNr4me-H3vbXVBEI9pdpwyzJT0AWLnZBI-aojafzbvF4T4');
+                const options = { userVisibleOnly: true, applicationServerKey: applicationServerKey };
+
+                serviceWorker.pushManager.subscribe(options).then(function(subscription) {
+                    console.log('Usuário assinado para notificações:', subscription);
+
+                    // Aqui você pode enviar o subscription.endpoint para o seu servidor para armazenar a assinatura
+
+                    // Exibe mensagem para o usuário
+                    document.getElementById('message').innerText = 'Você está agora inscrito para receber notificações!';
+                }).catch(function(error) {
+                    console.error('Erro ao se inscrever para notificações:', error);
+                    document.getElementById('message').innerText = 'Houve um erro ao se inscrever para notificações.';
+                });
+            });
+        }
+
+        // Função para converter a chave pública VAPID em formato base64 para Uint8Array
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+
+            for (let i = 0; i < rawData.length; i++) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+    </script>
 </body>
 </html>
