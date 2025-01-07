@@ -1,89 +1,162 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificações Push</title>
-    <link rel="manifest" href="manifest.json" />
-    <script src="frontend.js"></script>
+    <title>WebPush Example</title>
+    <base href="https://seuusuario.github.io/seu-repositorio/">
+    <link rel="manifest" href="manifest.json"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png"> <!-- PWA app icon -->
+    <style>
+        body {
+            background-color: #cfc7e2;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            padding-bottom: 50px;
+        }
+        .wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        #subscribe_btn, #send_notification_btn, #notification_input {
+            width: 100%;
+            line-height: 2;
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        #notification_input {
+            display: block;
+            margin-bottom: 10px;
+        }
+        #active_sub {
+            display: none;
+            background-color: #e7e7ff;
+            padding: 20px;
+            word-wrap: break-word;
+        }
+        #source_link {
+            position: fixed;
+            bottom: 10px;
+            color: #fff;
+            background-color: rgba(0,0,0,0.5);
+            padding: 5px;
+            left: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Notificação Push no iPhone/iPad</h1>
-    
-    <div>
-        <label for="title">Título da Notificação:</label>
-        <input type="text" id="title" placeholder="Digite o título">
+<div class="wrapper">
+    <h1>WebPush Example</h1>
+
+    <div id="content">
+        <div id="add-to-home-screen">
+            Para que as notificações WebPush funcionem, você pode precisar adicionar este site à Tela Inicial no seu iPhone ou iPad.
+            <img src="images/webpush-add-to-home-screen.jpg" alt="webpush add to home screen">
+        </div>
+
+        <div id="scan-qr-code">
+            Abra esta página no seu iPhone/iPad:
+            <img src="images/qrcode.png" alt="qrCode"><br><br>
+        </div>
+
+        <button id="subscribe_btn" onclick="subscribeToPush()">Inscrever-se para notificações</button>
+
+        <div id="active_sub">
+            <input id="notification_title" type="text" placeholder="Título da Notificação" class="notification_input">
+            <input id="notification_body" type="text" placeholder="Corpo da Notificação" class="notification_input">
+            <input id="notification_image" type="text" placeholder="URL da Imagem" class="notification_input">
+            <button id="send_notification_btn" onclick="sendNotification()">Enviar Notificação</button>
+        </div>
     </div>
-    <div>
-        <label for="body">Texto da Notificação:</label>
-        <input type="text" id="body" placeholder="Digite o texto">
-    </div>
-    <div>
-        <label for="imageUrl">URL da Imagem (Opcional):</label>
-        <input type="text" id="imageUrl" placeholder="URL da imagem">
-    </div>
-    <div>
-        <label for="notificationUrl">URL de destino:</label>
-        <input type="text" id="notificationUrl" placeholder="URL ao clicar na notificação">
-    </div>
 
-    <button onclick="subscribeAndSendNotification()">Enviar Notificação</button>
+    <a id="source_link" href="https://github.com/seuusuario/seu-repositorio">Código desta página</a>
+</div>
 
-    <script>
-        // Registra o Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/serviceworker.js')
-                .then(function(registration) {
-                    console.log('Service Worker registrado com sucesso:', registration);
-                })
-                .catch(function(error) {
-                    console.log('Erro ao registrar o Service Worker:', error);
-                });
-        }
+<script src="frontend.js"></script>
+<script>
+    let pushSubscription = null;
 
-        // Função que solicita a permissão para notificações e envia a notificação
-        function subscribeAndSendNotification() {
-            Notification.requestPermission().then(function(permission) {
-                if (permission === 'granted') {
-                    // Se a permissão for concedida, vamos configurar a notificação
-                    const title = document.getElementById('title').value;
-                    const body = document.getElementById('body').value;
-                    const imageUrl = document.getElementById('imageUrl').value;
-                    const notificationUrl = document.getElementById('notificationUrl').value;
-
-                    // Definir os dados da notificação
-                    const notificationData = {
-                        title: title,
-                        body: body,
-                        image: imageUrl,
-                        url: notificationUrl
-                    };
-
-                    // Enviar a notificação
-                    sendNotification(notificationData);
-                } else {
-                    alert('Você precisa permitir notificações!');
-                }
-            });
-        }
-
-        // Função que envia a notificação
-        function sendNotification(notificationData) {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.ready.then(function(serviceWorker) {
-                    serviceWorker.showNotification(notificationData.title, {
-                        body: notificationData.body,
-                        icon: 'icon.png', // Coloque o caminho para o ícone desejado
-                        image: notificationData.image, // A imagem configurada pelo usuário
-                        data: {
-                            url: notificationData.url // URL ao clicar na notificação
-                        }
-                    });
-
-                    console.log('Notificação enviada:', notificationData);
-                });
+    // Função para pedir permissão para notificações
+    function requestPermission() {
+        Notification.requestPermission().then(function(permission) {
+            if (permission === 'granted') {
+                document.getElementById('subscribe_btn').style.display = 'none';
+                document.getElementById('active_sub').style.display = 'block';
+            } else {
+                alert('Você precisa permitir notificações!');
             }
+        });
+    }
+
+    // Função para inscrever o usuário para notificações
+    function subscribeToPush() {
+        navigator.serviceWorker.ready.then(function(serviceWorker) {
+            const applicationServerKey = urlB64ToUint8Array('BLQsu4dPWlx4mbU5fIL5kyXGMB1mLOrqio32ffJsujkEBs2k7HHI5CDTabP0ekx65oyD6xuNXjmdW9QIehmHHrY');
+            let subscriptionOptions = {
+                userVisibleOnly: true,
+                applicationServerKey: applicationServerKey
+            };
+            serviceWorker.pushManager.subscribe(subscriptionOptions).then(function(subscription) {
+                pushSubscription = subscription;
+                console.log('Subscription:', JSON.stringify(subscription));
+                alert('Inscrição para notificações realizada com sucesso!');
+            }).catch(function(error) {
+                console.error('Erro ao inscrever-se:', error);
+            });
+        });
+    }
+
+    // Função para enviar a notificação
+    function sendNotification() {
+        const title = document.getElementById('notification_title').value;
+        const body = document.getElementById('notification_body').value;
+        const imageUrl = document.getElementById('notification_image').value;
+
+        const options = {
+            body: body,
+            icon: 'images/favicon.png', // Você pode substituir isso com o URL do ícone
+            image: imageUrl,
+            data: {
+                url: 'https://www.seu-site.com' // Você pode mudar isso para o destino da sua URL
+            }
+        };
+
+        if (pushSubscription) {
+            // Envia a notificação para o usuário
+            navigator.serviceWorker.ready.then(function(serviceWorker) {
+                serviceWorker.showNotification(title, options);
+            });
+        } else {
+            alert('Não há uma assinatura de notificação ativa.');
         }
-    </script>
+    }
+
+    // Função para converter a chave pública VAPID em formato correto
+    function urlB64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+        const rawData = atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    // Verifica se o Service Worker está registrado
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('serviceworker.js').then(function(registration) {
+            console.log('Service Worker registrado com sucesso:', registration);
+        }).catch(function(error) {
+            console.error('Erro ao registrar o Service Worker:', error);
+        });
+    }
+
+    // Chama a permissão de notificações ao carregar
+    window.onload = function() {
+        requestPermission();
+    };
+</script>
 </body>
 </html>
