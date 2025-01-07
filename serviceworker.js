@@ -1,4 +1,3 @@
-// Registrar o evento 'push' para quando a notificação for recebida
 self.addEventListener('push', function(event) {
     console.log('Push recebido', event);
 
@@ -18,14 +17,14 @@ self.addEventListener('push', function(event) {
     );
 });
 
-// Registrar o evento 'notificationclick' para quando o usuário clicar na notificação
 self.addEventListener('notificationclick', function(event) {
     console.log('Notificação clicada', event);
 
-    // Quando o usuário clicar, abrir a URL associada à notificação
-    event.notification.close();  // Fecha a notificação
+    // Fechar a notificação
+    event.notification.close();
 
+    // Abrir a URL associada à notificação
     event.waitUntil(
-        clients.openWindow(event.notification.data.url)  // Abre a página de destino
+        clients.openWindow(event.notification.data.url)
     );
 });
