@@ -37,7 +37,7 @@ function isPushManagerActive(pushManager) {
 
 async function subscribeToPush() {
     // Substitua pela sua chave pública VAPID
-    const VAPID_PUBLIC_KEY = 'BLQsu4dPWlx4mbU5fIL5kyXGMB1mLOrqio32ffJsujkEBs2k7HHI5CDTabP0ekx65oyD6xuNXjmdW9QIehmHHrY';
+    const VAPID_PUBLIC_KEY = 'BIgGPS2k4B7g-KGeV7Q4t70FqUlxlRBTZE9S0SUBG63vXpiJJc21ROAyOR4YvVOI45cz_DZ7XkmySN_yszsQ1tg';
 
     let swRegistration = await navigator.serviceWorker.getRegistration();
     let pushManager = swRegistration.pushManager;
