@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificação WebPush para iOS</title>
+    <title>Personalizar Notificação WebPush</title>
     <link rel="manifest" href="manifest.json">
     <style>
         body {
@@ -41,13 +41,29 @@
             margin-top: 20px;
             font-size: 18px;
         }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Receba Notificações Push</h1>
+        <h1>Receba e Personalize Notificações Push</h1>
         <p>Adicione o site à sua tela inicial no seu dispositivo iOS para começar a receber notificações.</p>
         <button onclick="subscribe();">Inscreva-se para Notificações</button>
+        
+        <div id="notification-form" style="display: none;">
+            <h3>Personalize sua Notificação</h3>
+            <input type="text" id="notification-title" placeholder="Título da Notificação" />
+            <textarea id="notification-body" placeholder="Corpo da Notificação"></textarea>
+            <input type="text" id="notification-image" placeholder="URL da Imagem da Notificação" />
+            <button onclick="sendNotification();">Enviar Notificação</button>
+        </div>
+        
         <div class="message" id="message"></div>
     </div>
 
@@ -63,7 +79,6 @@
 
         // Função para assinar o usuário para notificações
         function subscribe() {
-            // Verificar se o navegador suporta PushManager
             if (!('PushManager' in window)) {
                 alert('Este navegador não suporta notificações push!');
                 return;
@@ -89,16 +104,40 @@
 
                 serviceWorker.pushManager.subscribe(options).then(function(subscription) {
                     console.log('Usuário assinado para notificações:', subscription);
-
-                    // Aqui você pode enviar o subscription.endpoint para o seu servidor para armazenar a assinatura
-
-                    // Exibe mensagem para o usuário
                     document.getElementById('message').innerText = 'Você está agora inscrito para receber notificações!';
+                    document.getElementById('notification-form').style.display = 'block'; // Mostrar formulário de personalização
                 }).catch(function(error) {
                     console.error('Erro ao se inscrever para notificações:', error);
                     document.getElementById('message').innerText = 'Houve um erro ao se inscrever para notificações.';
                 });
             });
+        }
+
+        // Função para enviar uma notificação personalizada
+        function sendNotification() {
+            const title = document.getElementById('notification-title').value;
+            const body = document.getElementById('notification-body').value;
+            const image = document.getElementById('notification-image').value;
+
+            if (!title || !body || !image) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            const options = {
+                body: body,
+                icon: 'caminho/para/o/icon.png',  // Use um ícone padrão ou forneça um campo para ele também.
+                image: image,  // A URL da imagem fornecida pelo usuário
+                data: {
+                    url: '/pagina-de-destino'
+                }
+            };
+
+            navigator.serviceWorker.ready.then(function(serviceWorker) {
+                serviceWorker.showNotification(title, options);
+            });
+
+            alert('Notificação enviada!');
         }
 
         // Função para converter a chave pública VAPID em formato base64 para Uint8Array
