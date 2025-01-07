@@ -2,8 +2,8 @@
 // All subscription tokens associated with that key, so if you change it - you may lose old subscribers
 // You MUST need generate your own VAPID keys!
 // Newer share your PRIVATE_VAPID_KEY. It should be stored in a safe storage
-const VAPID_PUBLIC_KEY = "BAwUJxIa7mJZMqu78Tfy2Sb1BWnYiAatFCe1cxpnM-hxNtXjAwaNKz1QKLU8IYYhjUASOFzSvSnMgC00vfsU0IM"
-const VAPID_PRIVATE_KEY = "wH3Mire4Nrw7UWiYuD4e76qSezQ-5Nf_9n_HK3vHBSU";
+const VAPID_PUBLIC_KEY = "BIgGPS2k4B7g-KGeV7Q4t70FqUlxlRBTZE9S0SUBG63vXpiJJc21ROAyOR4YvVOI45cz_DZ7XkmySN_yszsQ1tg"
+const VAPID_PRIVATE_KEY = "TmpUdIB0JtOifIgRhyMSp7fzNj2MRyxv3IzB9c-SW1c";
 
 
 // npm install web-push
